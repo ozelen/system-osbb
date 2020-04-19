@@ -22,6 +22,7 @@ create schema osbb_park_tower
         floor int,
         project_num int,
         type varchar(64) not null,
+        document_link text null,
         total_space float not null,
         living_space float null,
         constraint "prop_total_space" check (total_space >=1),
