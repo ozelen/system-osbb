@@ -6,6 +6,11 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import MaskedInput from 'react-text-mask';
 import Input from '@material-ui/core/Input';
+import { User } from './User';
+import { pickBy, identity } from 'lodash';
+
+const clearObj = (obj: any) =>
+  pickBy(obj, identity);
 
 export interface Property {
   id?: string;
@@ -18,7 +23,6 @@ const useStyles = makeStyles((theme) =>
     root: {
       '& > *': {
         margin: theme.spacing(1),
-        width: '25ch',
       },
     },
     formControl: {
@@ -50,81 +54,83 @@ function TextMaskCustom(props: TextMaskCustomProps) {
   );
 }
 
-export const SignupForm = () => {
+interface SignupFormProps {
+  user: User;
+  onSubmit: () => void;
+  onCancel: () => void;
+}
+
+export const SignupForm = ({user, onSubmit, onCancel}: SignupFormProps) => {
   // Notice that we have to initialize ALL of fields with values. These
   // could come from props, but since we don't want to prefill this form,
   // we just use an empty string. If you don't do this, React will yell
   // at you.
   const formik = useFormik({
     initialValues: {
-      firstName: 'Oleksiy',
-      lastName: 'Zelenyuk',
-      email: 'o@zelen.uk',
-      phone: '380503480098',
-      properties: [
-        {
-          section: 2,
-          floor: 9,
-          planNum: 21,
-          type: 1,
-        }
-      ]
+      firstName: '',
+      lastName: '',
+      patName: '',
+      phone: '',
+      email: '',
+      ...clearObj(user)
     },
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
-    },
+    enableReinitialize: true,
+    onSubmit,
   });
   const classes = useStyles();
-  const [type, setAge] = React.useState('');
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setAge(event.target.value as string);
-  };
 
   return (
     <form className={classes.root} onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <label htmlFor="firstName">First Name</label>
-          <TextField
-            id="firstName"
-            name="firstName"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.firstName}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <label htmlFor="lastName">Last Name</label>
+        <Grid item xs={4}>
           <TextField
             id="lastName"
+            label="Прізвище"
             name="lastName"
             type="text"
             onChange={formik.handleChange}
             value={formik.values.lastName}
           />
         </Grid>
-      </Grid>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <label htmlFor="email">Email Address</label>
+        <Grid item xs={4}>
           <TextField
-            id="email"
-            name="email"
-            type="email"
+            id="firstName"
+            label="Ім'я"
+            name="firstName"
+            type="text"
             onChange={formik.handleChange}
-            value={formik.values.email}
+            value={formik.values.firstName}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            id="patName"
+            label="По-батькові"
+            name="patName"
+            type="text"
+            onChange={formik.handleChange}
+            value={formik.values.patName}
           />
         </Grid>
       </Grid>
 
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <label htmlFor="phone">Phone Number</label>
+          <TextField
+            id="email"
+            name="email"
+            type="email"
+            label="Ел. адреса"
+            onChange={formik.handleChange}
+            value={formik.values.email}
+            style={{width:'100%'}}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
           <Input
+            style={{width:'100%'}}
             id="phone"
             name="phone"
             onChange={formik.handleChange}
@@ -134,6 +140,7 @@ export const SignupForm = () => {
         </Grid>
       </Grid>
       <Button type="submit" color="primary">Submit</Button>
+      <Button type="button" onClick={onCancel}>Cancel</Button>
     </form>
   );
 };

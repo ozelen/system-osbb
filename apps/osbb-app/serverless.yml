@@ -1,0 +1,16 @@
+service: creator-web-app
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, env:ENV, 'dev'}
+  region: us-east-1
+
+plugins:
+  - serverless-finch
+custom:
+  client:
+    bucketName: osbb-app-prod.zelen.uk
+    distributionFolder: build
+    errorDocument: index.html
+

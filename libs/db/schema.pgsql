@@ -1,18 +1,19 @@
+drop schema if exists osbb_park_tower cascade;
 create schema osbb_park_tower
     create table users (
         id uuid not null primary key,
         phone varchar(128) not null unique,
-        email varchar(128) not null unique,
-        first_name varchar(128) not null,
-        last_name varchar(128) not null,
+        email varchar(128) unique,
+        first_name varchar(128),
+        last_name varchar(128),
         pat_name varchar(128),
-        created_at timestamp,
+        created_at timestamp not null constraint "user_created_at" default (now()),
         created_by uuid null,
-        status varchar(64),
+        status varchar(64) default 'new',
         info jsonb,
-        role varchar(64),
+        role varchar(64) default 'candidate',
         constraint "user_status" check (status in ('new', 'active', 'suspended', 'deleted')),
-        constraint "user_role" check (role is null or role in ('superadmin', 'admin', 'member')),
+        constraint "user_role" check (role is null or role in ('superadmin', 'admin', 'member', 'candidate')),
         foreign key (created_by) references users (id)
     )
     create table properties (
@@ -22,6 +23,7 @@ create schema osbb_park_tower
         floor int,
         project_num int,
         type varchar(64) not null,
+        confirm_document text null,
         document_link text null,
         total_space float not null,
         living_space float null,

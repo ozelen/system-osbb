@@ -1,0 +1,12 @@
+{
+  "name": "migrate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "migrate:users": "node users/migrate.js"
+  },
+  "dependencies": {
+    "knex": "^0.21.0"
+  }
+}

@@ -6,6 +6,13 @@
     "libs/*"
   ],
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "lerna": "^3.20.2",
+    "env-cmd": "^10.1.0"
+  },
+  "nohoist": [
+    "**"
+  ],
+  "scripts": {
+    "migrate:prod": "env-cmd node apps/migrate/migrate.js"
   }
 }
